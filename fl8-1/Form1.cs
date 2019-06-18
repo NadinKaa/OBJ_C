@@ -223,7 +223,10 @@ namespace LoadingObjFormat
         {
             OpenFileDialog OpenFile = new OpenFileDialog();
             OpenFile.Filter = "OBJ files (*.obj)|*.obj|All files (*.*)|*.*";
-            OpenFile.InitialDirectory = @"D:\";
+
+            string pathToExe = System.Reflection.Assembly.GetEntryAssembly().Location;
+            OpenFile.InitialDirectory = Path.GetDirectoryName(pathToExe);
+
             OpenFile.Title = "Please select an OBJ file to encrypt.";
             if (OpenFile.ShowDialog() == DialogResult.OK)
             {
