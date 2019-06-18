@@ -237,7 +237,12 @@ namespace LoadingObjFormat
                 Read_File_Obj(FileName);
             }
             else
+            {
                 MessageBox.Show("File not opened!");
+                MessageBox.Show("File not opened!");
+                MessageBox.Show("File not opened!");
+                MessageBox.Show("File not opened!");
+            }
         }
 
         void Read_File_Obj (string name_file)
