@@ -5,7 +5,7 @@ using System.IO;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-
+using System.Linq;
 
 namespace LoadingObjFormat
 {
@@ -120,9 +120,9 @@ namespace LoadingObjFormat
             _glControl.Invalidate();
         }
 
-        private void GLControl_MouseUP (object sender, MouseEventArgs e)    // контроль отжатия кнопок мыши
+        private void GLControl_MouseUP(object sender, MouseEventArgs e)    // контроль отжатия кнопок мыши
         {
-            if (e.Button == MouseButtons.Left) 
+            if (e.Button == MouseButtons.Left)
             {
                 _isLeftDown = false;    // снять флаг с левой кнопки
             }
@@ -194,7 +194,7 @@ namespace LoadingObjFormat
         //    }
         //    _glControl.Invalidate();
         //}
-         
+
         private void setObjectColorToolStripMenuItem_Click(object sender, EventArgs e)  // смена цвета объекта
         {
             using (var colorDialog = new ColorDialog())
@@ -242,49 +242,64 @@ namespace LoadingObjFormat
             else
             {
                 MessageBox.Show("File not opened!");
-                MessageBox.Show("File not opened!");
-                MessageBox.Show("File not opened!");
-                MessageBox.Show("File not opened!");
             }
         }
 
-        void Read_File_Obj (string name_file)
+        void Read_File_Obj(string name_file)
         {
             int counter = 0;
             string line;
-            
-            //var StroksFile = File.ReadAllLines(name_file);
-            StreamReader StroksFile = new StreamReader(name_file);
-            int File_Size = StroksFile.ReadToEnd().Length;
-            //for (int i=0; i< len; i++)
-            // создание динамических массивов???
-            float Tmp_Coords = File_Size;
-            int Tmp_FaseArray = File_Size;
-            coord_index = 0;
-            //int[] arr = new int[number];
-            line = Convert.ToString(File.ReadLines(name_file));
-
-            int countpoint = 0;
-            int countfase = 0;
-            while ((line=StroksFile.ReadLine()) != null)  // не работает!!!
+            if ((name_file) != null)
             {
-                char[] line_copy = line.ToCharArray(); // преобразуем строку в массив
-                countpoint = line.Length;
-                if ((line_copy[0] =='v') && (line_copy[1]==' '))
+                StreamReader StroksFile = new StreamReader(name_file);
+                StroksFile.DiscardBufferedData();
+                string[] str;
+                int File_Size = 0;
+                try
                 {
-                    line_copy[0] = ' '; // обнуление символа 
-                    line_copy[1] = ' '; // обнуление символа
-                    line = new string(line_copy);
-                    line.TrimStart(' ');
-                    countpoint = line.Length;
+                    string[] Stroka1 = StroksFile.ReadToEnd().Split('\n'); // разбитие файла построчно
+                    Stroka1 = Stroka1.Where(n => !string.IsNullOrEmpty(n)).ToArray();
+                    File_Size = Stroka1.Count();    // количество элементов в массиве, т.е. количество строк в файле
+
+                    int countpoint = 0;
+                    int countfase = 0;
+                    // // разбивка файла
+                    for (int i = 0; i < File_Size; i++)   // цикл по полличеству строк в файле
+                    {
+                        string[] RazS = Stroka1[i].Split(' ');  // разбиваем строку из массива строк на элементы, минуя пробелы как разделители
+
+                        if (RazS.Count() > 2 && RazS.Count() < 5)   // если значений после разбития строки от 3 до 4, тогда это нужная нам строка
+                        {
+                            for (int j = 0; j < RazS.Count(); j++) // организовать цикл прохода по полученным данным и разбивкой их на массивы - верщин, текстур и нормалей.
+                           {
+                                if (Convert.ToChar(RazS[0]) == 'v') // это вершина
+                                {
+                                    // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ ВЕРШИНЫ ...
+                                }
+                                if (RazS[0] == 'vn') // это нормаль
+                                {
+                                    // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ НОРМАЛИ ...
+                                }
+                                if (RazS[0] == 'vt') // это текстура
+                                {
+                                    // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ТЕКСТУРЫ ...
+                                }
+                                if (Convert.ToChar(RazS[0]) == 'f') // это полигон
+                                {
+                                    // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ПОЛИГОНА ...
+                                }
+                            }
+                        }
+                    }
+                    StroksFile.Close();
                 }
-
-                counter++;
-            }
-            StroksFile.Close(); 
-
-            
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }       
         }
+        
 
         //private void btnLoadFileOBJ_Click(object sender, EventArgs e)
         //{
