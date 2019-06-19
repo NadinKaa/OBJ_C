@@ -6,6 +6,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace LoadingObjFormat
 {
@@ -29,6 +30,8 @@ namespace LoadingObjFormat
         private float _objectXPos = 0f;
         private float _objectYPos = 0f;
         private float _objectZPos = 0f;
+
+        private List<float> Tmp_Coords = new List<float>();
 
         int coord_index = 0, Fase_index = 0;
         float coords;
@@ -245,6 +248,7 @@ namespace LoadingObjFormat
         {
             int counter = 0;
             string line;
+            int coords_index = 0;
             if ((name_file) != null)
             {
                 StreamReader StroksFile = new StreamReader(name_file);
@@ -267,15 +271,18 @@ namespace LoadingObjFormat
                         if (RazS.Count() > 2 && RazS.Count() < 5)   // если значений после разбития строки от 3 до 4, тогда это нужная нам строка
                         {
                             for (int j = 0; j < RazS.Count(); j++) // организовать цикл прохода по полученным данным и разбивкой их на массивы - верщин, текстур и нормалей.
-                           {
+                            {
                                 string tempD = RazS[0];
                                 string Vershina = "v";
                                 string Normal = "vn";
                                 string Textura = "vt";
                                 string Poligon = "f";
+
                                 if (tempD == Vershina) // это вершина
                                 {
-                                    // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ ВЕРШИНЫ ...
+                                    Tmp_Coords.Add(float.Parse(RazS[1]));
+                                    Tmp_Coords.Add(float.Parse(RazS[2]));
+                                    Tmp_Coords.Add(float.Parse(RazS[3]));
                                 }
                                 else if (tempD == Normal) // это нормаль
                                 {
@@ -285,7 +292,7 @@ namespace LoadingObjFormat
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ТЕКСТУРЫ ...
                                 }
-                                else if (tempD  == Poligon) // это полигон
+                                else if (tempD == Poligon) // это полигон
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ПОЛИГОНА ...
                                 }
@@ -298,9 +305,9 @@ namespace LoadingObjFormat
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }       
+            }
         }
-        
+
 
         //private void btnLoadFileOBJ_Click(object sender, EventArgs e)
         //{
@@ -317,4 +324,4 @@ namespace LoadingObjFormat
         //    //char[] chm = MasStr.ToCharArray(); 
 
     }
-    }
+}
