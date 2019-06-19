@@ -268,19 +268,24 @@ namespace LoadingObjFormat
                         {
                             for (int j = 0; j < RazS.Count(); j++) // организовать цикл прохода по полученным данным и разбивкой их на массивы - верщин, текстур и нормалей.
                            {
-                                if (Convert.ToChar(RazS[0]) == 'v') // это вершина
+                                string tempD = RazS[0];
+                                string Vershina = "v";
+                                string Normal = "vn";
+                                string Textura = "vt";
+                                string Poligon = "f";
+                                if (tempD == Vershina) // это вершина
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ ВЕРШИНЫ ...
                                 }
-                                if (RazS[0] == 'vn') // это нормаль
+                                else if (tempD == Normal) // это нормаль
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ НОРМАЛИ ...
                                 }
-                                if (RazS[0] == 'vt') // это текстура
+                                else if (tempD == Textura) // это текстура
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ТЕКСТУРЫ ...
                                 }
-                                if (Convert.ToChar(RazS[0]) == 'f') // это полигон
+                                else if (tempD  == Poligon) // это полигон
                                 {
                                     // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ПОЛИГОНА ...
                                 }
