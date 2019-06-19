@@ -239,10 +239,6 @@ namespace LoadingObjFormat
                 // переход на функцию рид_файл_обж
                 Read_File_Obj(FileName);
             }
-            else
-            {
-                MessageBox.Show("File not opened!");
-            }
         }
 
         void Read_File_Obj(string name_file)
