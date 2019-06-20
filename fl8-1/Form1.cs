@@ -7,6 +7,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace LoadingObjFormat
 {
@@ -242,15 +243,18 @@ namespace LoadingObjFormat
             }
         }
 
+        private List<float> Tmp_Coords = new List<float>();  // 2-3й вариант вершины
+        private List<int> Tmp_faseArray = new List<int>();   // 2й вариант полигоны
+
         void Read_File_Obj(string name_file)
         {
             int counterV = 0, counterN = 0, counterT = 0, counter = 0;
-            string line;
+            
             if ((name_file) != null)
             {
                 StreamReader StroksFile = new StreamReader(name_file);
                 StroksFile.DiscardBufferedData();
-                string[] str;
+                //string[] str;
                 int File_Size = 0;
                 try
                 {
@@ -260,10 +264,10 @@ namespace LoadingObjFormat
 
                     int countpoint = 0;
                     int countfase = 0;
-                    float[] Mass_Ver = new float[File_Size * 3];  // над размером этих массивов надо еще подумать
+                    //float[] Mass_Ver = new float[File_Size * 3];  // над размером этих массивов надо еще подумать
                     float[] Mass_Norm = new float[File_Size * 3];
                     float[] Mass_Tex = new float[File_Size * 3];
-                    int[] Mass_Poll = new int[File_Size * 3];  // над размером этих массивов надо еще подумать
+                    //int[] Mass_Poll = new int[File_Size * 3];  // над размером этих массивов надо еще подумать
                     // // разбивка файла
                     for (int i = 0; i < File_Size; i++)   // цикл по полличеству строк в файле
                     {
@@ -282,11 +286,19 @@ namespace LoadingObjFormat
                            { // этот цикл по сути не нужен, можно переделать без него!!!!
                                 
                                 if (tempD == Vershina) // это вершина
-                                {
-                                        Mass_Ver[counterV + 0] = Convert.ToSingle(RazS[j + 1], new CultureInfo("en-US"));
-                                        Mass_Ver[counterV + 1] = Convert.ToSingle(RazS[j + 2], new CultureInfo("en-US"));
-                                        Mass_Ver[counterV + 2] = Convert.ToSingle(RazS[j + 3], new CultureInfo("en-US"));
-                                        counterV += 3;
+                                {       // 1й вариант
+                                        //Mass_Ver[counterV + 0] = Convert.ToSingle(RazS[j + 1], new CultureInfo("en-US"));
+                                        //Mass_Ver[counterV + 1] = Convert.ToSingle(RazS[j + 2], new CultureInfo("en-US"));
+                                        //Mass_Ver[counterV + 2] = Convert.ToSingle(RazS[j + 3], new CultureInfo("en-US"));
+                                        //counterV += 3;
+                                    // 2й вариант
+                                    //Tmp_Coords.Add(float.Parse(RazS[1]));
+                                    //Tmp_Coords.Add(float.Parse(RazS[2]));
+                                    //Tmp_Coords.Add(float.Parse(RazS[3]));
+                                    // 3й вариант
+                                    Tmp_Coords.Add(Convert.ToSingle(RazS[1], new CultureInfo("en-US")));
+                                    Tmp_Coords.Add(Convert.ToSingle(RazS[2], new CultureInfo("en-US")));
+                                    Tmp_Coords.Add(Convert.ToSingle(RazS[3], new CultureInfo("en-US")));
                                 }
                                 else if (tempD == Normal) // это нормаль
                                 {
@@ -309,12 +321,17 @@ namespace LoadingObjFormat
                                 else if (tempD  == Poligon) // это полигон
                                 {
                                     for (int k = 1; k < 4; k++)
-                                    {
+                                    {   
                                         string[] tempP1 = RazS[j + k].Split('/');
-                                        Mass_Poll[counter + 0] = Convert.ToInt32(tempP1[0]);
-                                        Mass_Poll[counter + 1] = Convert.ToInt32(tempP1[1]);
-                                        Mass_Poll[counter + 2] = Convert.ToInt32(tempP1[2]);
-                                        counter += 3;
+                                        // 1й вариант
+                                        //Mass_Poll[counter + 0] = Convert.ToInt32(tempP1[0]);
+                                        //Mass_Poll[counter + 1] = Convert.ToInt32(tempP1[1]);
+                                        //Mass_Poll[counter + 2] = Convert.ToInt32(tempP1[2]);
+                                        //counter += 3;
+                                        // 2й вариант
+                                        Tmp_faseArray.Add(Convert.ToInt32(tempP1[0]));
+                                        Tmp_faseArray.Add(Convert.ToInt32(tempP1[1]));
+                                        Tmp_faseArray.Add(Convert.ToInt32(tempP1[2]));
                                     }                                    
                                 }
                             }
