@@ -349,4 +349,4 @@ healthchecksdb
 MigrationBackup/
 
 # Don't want to ignore .obj files in Assets
-!Assets/*.obj
+!fl8-1/Assets/**/*.obj
