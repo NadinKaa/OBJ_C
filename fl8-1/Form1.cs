@@ -6,6 +6,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Linq;
+using System.Globalization;
 
 namespace LoadingObjFormat
 {
@@ -243,7 +244,7 @@ namespace LoadingObjFormat
 
         void Read_File_Obj(string name_file)
         {
-            int counter = 0;
+            int counterV = 0, counterN = 0, counterT = 0, counter = 0;
             string line;
             if ((name_file) != null)
             {
@@ -259,6 +260,10 @@ namespace LoadingObjFormat
 
                     int countpoint = 0;
                     int countfase = 0;
+                    float[] Mass_Ver = new float[File_Size * 3];  // над размером этих массивов надо еще подумать
+                    float[] Mass_Norm = new float[File_Size * 3];
+                    float[] Mass_Tex = new float[File_Size * 3];
+                    int[] Mass_Poll = new int[File_Size * 3];  // над размером этих массивов надо еще подумать
                     // // разбивка файла
                     for (int i = 0; i < File_Size; i++)   // цикл по полличеству строк в файле
                     {
@@ -266,28 +271,51 @@ namespace LoadingObjFormat
 
                         if (RazS.Count() > 2 && RazS.Count() < 5)   // если значений после разбития строки от 3 до 4, тогда это нужная нам строка
                         {
-                            for (int j = 0; j < RazS.Count(); j++) // организовать цикл прохода по полученным данным и разбивкой их на массивы - верщин, текстур и нормалей.
-                           {
-                                string tempD = RazS[0];
-                                string Vershina = "v";
-                                string Normal = "vn";
-                                string Textura = "vt";
-                                string Poligon = "f";
+                            string tempD = RazS[0];
+                            string Vershina = "v";
+                            string Normal = "vn";
+                            string Textura = "vt";
+                            string Poligon = "f";
+                           // float[,,] Mass_Ver; // трехмерный массив для координат вершины
+                            float tempX = 0, tempY = 0, tempZ = 0;
+                            for (int j = 0; j <1; j++) // организовать цикл прохода по полученным данным и разбивкой их на массивы - верщин, текстур и нормалей.
+                           { // этот цикл по сути не нужен, можно переделать без него!!!!
+                                
                                 if (tempD == Vershina) // это вершина
                                 {
-                                    // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ ВЕРШИНЫ ...
+                                        Mass_Ver[counterV + 0] = Convert.ToSingle(RazS[j + 1], new CultureInfo("en-US"));
+                                        Mass_Ver[counterV + 1] = Convert.ToSingle(RazS[j + 2], new CultureInfo("en-US"));
+                                        Mass_Ver[counterV + 2] = Convert.ToSingle(RazS[j + 3], new CultureInfo("en-US"));
+                                        counterV += 3;
                                 }
                                 else if (tempD == Normal) // это нормаль
                                 {
-                                    // ЗАПИСАТЬ КУДА-ТО КООРДИНАТЫ НОРМАЛИ ...
+                                    Mass_Norm[counterN + 0] = Convert.ToSingle(RazS[j + 1], new CultureInfo("en-US"));
+                                    Mass_Norm[counterN + 1] = Convert.ToSingle(RazS[j + 2], new CultureInfo("en-US"));
+                                    Mass_Norm[counterN + 2] = Convert.ToSingle(RazS[j + 3], new CultureInfo("en-US"));
+                                    counterN += 3;
                                 }
                                 else if (tempD == Textura) // это текстура
                                 {
-                                    // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ТЕКСТУРЫ ...
+                                    Mass_Tex[counterT + 0] = Convert.ToSingle(RazS[j + 1], new CultureInfo("en-US"));
+                                    Mass_Tex[counterT + 1] = Convert.ToSingle(RazS[j + 2], new CultureInfo("en-US"));
+                                    if (RazS.Count() > 3)
+                                    {
+                                        Mass_Tex[counterT + 2] = Convert.ToSingle(RazS[j + 3], new CultureInfo("en-US"));
+                                        counterT += 3;
+                                    }
+                                    else counterT += 2;
                                 }
                                 else if (tempD  == Poligon) // это полигон
                                 {
-                                    // ЗАПИСАТЬ КУДА-ТО ДАННЫЕ ПОЛИГОНА ...
+                                    for (int k = 1; k < 4; k++)
+                                    {
+                                        string[] tempP1 = RazS[j + k].Split('/');
+                                        Mass_Poll[counter + 0] = Convert.ToInt32(tempP1[0]);
+                                        Mass_Poll[counter + 1] = Convert.ToInt32(tempP1[1]);
+                                        Mass_Poll[counter + 2] = Convert.ToInt32(tempP1[2]);
+                                        counter += 3;
+                                    }                                    
                                 }
                             }
                         }
