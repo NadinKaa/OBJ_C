@@ -9,6 +9,7 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 
+
 namespace LoadingObjFormat
 {
     public partial class Form1 : Form
@@ -35,23 +36,35 @@ namespace LoadingObjFormat
         int coord_index = 0, Fase_index = 0;
         float coords;
         int Index;
-        struct coord
-        {
-            float x;
-            float y;
-            float z;
-        }
+        //struct coord
+        //{
+        //    float x;
+        //    float y;
+        //    float z;
+        //}
 
         struct poligons
         {
-            coord point;
+            Coord point;
         }
 
-        coord Mymass;
+        Coord MyMass;
         poligons models;
         int point = 0;
         int p = 0;
 
+        class Coord
+        {
+            public double X;
+            public double Y;
+            public double Z;
+            public Coord(double X, double Y, double Z)
+            {
+                this.X = X;
+                this.Y = Y;
+                this.Z = Z;
+            }
+        }
 
         private enum ActivePlane    // Активная плоскость 0 - XY, 1 - XZ
         {
@@ -343,9 +356,49 @@ namespace LoadingObjFormat
                 {
                     MessageBox.Show(ex.Message);
                 }
-            }       
+            }
+            Compare(Tmp_Coords, Tmp_faseArray, Tmp_faseArray.Count(), Tmp_Coords.Count());
         }
-        
+
+        private void Compare(List<float> Coords, List<int> indexs, int count_fase, int count_point)
+        {
+            MyMass = new coord[count_point / 3];    // массив для точек/вершин
+            models = new poligons[count_fase / 3]; // массив для треугольных полигонов
+
+            //  перебор точек с присвоением координат каждой из индекса
+            for (int i = 0; i < count_point; i += 3) // 
+            {
+                MyMass[point].x = Coords[i + 0]; // координата X
+                MyMass[point].y = Coords[i + 1]; // координата Y
+                MyMass[point].z = Coords[i + 2]; // координата Z
+                point++;
+            }
+            p = 0;
+
+            // перебор ребер с присвоением координат в зависимости от индекса
+            for (int f = 0; f < count_fase; f += 3)
+            {
+                models[p].point = new coord[3];
+                for (int s = 0; s < 3; s++)
+                    models[p].point[s] = MyMass[indexs[f = D]]
+
+            }
+            p++;
+        }
+
+        void Dreaw_Obj()
+        {
+            for (int i=0; i<p; i++)
+            {
+                GL.Color3(0, 1, 0);
+                GL.Begin(BeginMode.Polygon);
+                for (int s = 0; s < 3; s++)
+                    GL.Vertex3(models[i].point[s].x, models[i].point[s].y, models[i].point[s].z);
+
+                GL.End();
+            }
+        }
+
 
         //private void btnLoadFileOBJ_Click(object sender, EventArgs e)
         //{
