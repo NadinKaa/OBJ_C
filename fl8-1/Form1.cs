@@ -43,15 +43,15 @@ namespace LoadingObjFormat
         //    float z;
         //}
 
-        struct poligons
+        class Poligons
         {
             Coord point;
         }
 
-        Coord MyMass;
-        poligons models;
-        int point = 0;
-        int p = 0;
+        Coord[] MyMass; // точка/вершина
+        Poligons[] models; //полигоны
+        int point = 0; // количество точек
+        int p = 0; // собираем координаты в индексы
 
         class Coord
         {
@@ -59,7 +59,7 @@ namespace LoadingObjFormat
             public double Y;
             public double Z;
             public Coord(double X, double Y, double Z)
-            {
+            {   // указывает начальные значения 
                 this.X = X;
                 this.Y = Y;
                 this.Z = Z;
@@ -362,15 +362,15 @@ namespace LoadingObjFormat
 
         private void Compare(List<float> Coords, List<int> indexs, int count_fase, int count_point)
         {
-            MyMass = new coord[count_point / 3];    // массив для точек/вершин
-            models = new poligons[count_fase / 3]; // массив для треугольных полигонов
+            MyMass = new Coord[count_point / 3];    // массив для точек/вершин
+            models = new Poligons[count_fase / 3]; // массив для треугольных полигонов
 
             //  перебор точек с присвоением координат каждой из индекса
             for (int i = 0; i < count_point; i += 3) // 
             {
-                MyMass[point].x = Coords[i + 0]; // координата X
-                MyMass[point].y = Coords[i + 1]; // координата Y
-                MyMass[point].z = Coords[i + 2]; // координата Z
+                MyMass[point].X = Coords[i + 0]; // координата X
+                MyMass[point].Y = Coords[i + 1]; // координата Y
+                MyMass[point].Z = Coords[i + 2]; // координата Z
                 point++;
             }
             p = 0;
@@ -378,15 +378,14 @@ namespace LoadingObjFormat
             // перебор ребер с присвоением координат в зависимости от индекса
             for (int f = 0; f < count_fase; f += 3)
             {
-                models[p].point = new coord[3];
+                models[p].point = new Coord[3];
                 for (int s = 0; s < 3; s++)
-                    models[p].point[s] = MyMass[indexs[f = D]]
-
+                    models[p].point[s] = MyMass[indexs[f + s] - 1];
+                p++;
             }
-            p++;
         }
 
-        void Dreaw_Obj()
+        private void Draw_Obj()
         {
             for (int i=0; i<p; i++)
             {
